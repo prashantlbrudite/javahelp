@@ -7,7 +7,9 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.core.StandardReflectionParameterNameDiscoverer;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "employees")
@@ -40,7 +42,7 @@ public class Employee  {
             joinColumns = @JoinColumn(name = "employee_id"),
             inverseJoinColumns = @JoinColumn(name = "project_id")
     )
-    private List<Project> projectList;
+    private Set<Project> projectList = new HashSet<>();
 
     private String Address;
 

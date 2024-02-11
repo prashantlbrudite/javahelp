@@ -22,7 +22,7 @@ public class ProjectController {
         this.projectService = projectService;
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}/status")
     public ProjectStatus getStatus(@PathVariable("id") long id){
         return projectService.getProjectStatus(id);
 
@@ -51,7 +51,7 @@ public class ProjectController {
     }
 
     @GetMapping("/{id}")
-    public Project getOneProject(@PathVariable("/id") long id){
+    public Project getOneProject(@PathVariable("id") long id){
         return projectService.getOneProject(id);
     }
 

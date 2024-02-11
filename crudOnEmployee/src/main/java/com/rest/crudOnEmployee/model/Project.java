@@ -1,10 +1,13 @@
 package com.rest.crudOnEmployee.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @AllArgsConstructor
@@ -30,8 +33,9 @@ public class Project {
     @Enumerated(EnumType.STRING)
     private ProjectStatus projectStatus = ProjectStatus.New;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "projectList")
-    private List<Employee> employeeList;
+    private Set<Employee> employeeList = new HashSet<>();
 
     private String teamLeader;
 
