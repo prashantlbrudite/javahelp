@@ -6,6 +6,7 @@ import com.rest.crudOnEmployee.model.Employee;
 import com.rest.crudOnEmployee.model.Project;
 import com.rest.crudOnEmployee.service.EmployeeService;
 import com.rest.crudOnEmployee.service.ProjectService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,35 +23,35 @@ public class EmployeeController {
 
 
     @GetMapping("/{id}")
-    public Employee getEmployee(@PathVariable("id") int id){
+    public ResponseEntity getEmployee(@PathVariable("id") int id){
         return employeeService.getEmployee(id);
     }
 
     @GetMapping("/")
-    public List<Employee> getAllEmployee(){
+    public ResponseEntity getAllEmployee(){
         return employeeService.getAllEmployee();
     }
 
     @PostMapping("/")
-    public String createEmployee(@RequestBody Employee employee){
-        employeeService.createEmployee(employee);
-        return "Employee created Successfully";
+    public ResponseEntity createEmployee(@RequestBody Employee employee){
+        return employeeService.createEmployee(employee);
+
     }
 
     @PutMapping("/")
-    public String updateEmployee(@RequestBody Employee employee){
-        employeeService.updateEmployee(employee);
-        return "Employee updated Successfully";
+    public ResponseEntity updateEmployee(@RequestBody Employee employee){
+        return employeeService.updateEmployee(employee);
+
     }
 
     @DeleteMapping("/{id}")
-    public String deleteEmployee(@PathVariable("id") int id){
-        employeeService.deleteEmployee(id);
-        return "Employee deleted Successfully";
+    public ResponseEntity deleteEmployee(@PathVariable("id") int id){
+        return employeeService.deleteEmployee(id);
+//        return "Employee deleted Successfully";
     }
 
     @PostMapping("/{empid}/project/{projectid}")
-    public Employee AssignProject(@PathVariable("empid")long empid,@PathVariable("projectid") long projectid){
+    public ResponseEntity AssignProject(@PathVariable("empid")long empid,@PathVariable("projectid") long projectid){
         return employeeService.setProject(empid,projectid);
     }
 }

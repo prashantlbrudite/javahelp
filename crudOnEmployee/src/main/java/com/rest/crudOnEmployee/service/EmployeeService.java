@@ -4,12 +4,17 @@ import com.rest.crudOnEmployee.model.Employee;
 import com.rest.crudOnEmployee.model.Project;
 import com.rest.crudOnEmployee.repository.EmployeeRepository;
 import com.rest.crudOnEmployee.repository.ProjectRepository;
+import com.rest.crudOnEmployee.response.ResponseHandler;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -22,43 +27,72 @@ public class EmployeeService {
         this.projectRepository = projectRepository;
     }
 
-    public String createEmployee(Employee employee){
+    public ResponseEntity createEmployee(Employee employee) {
         employeeRepository.save(employee);
-        return "Success";
+        return ResponseHandler.responseBuilder("Employee created successfully", HttpStatus.CREATED, null, "null");
     }
 
-    public String updateEmployee(Employee employee){
+    public ResponseEntity updateEmployee(Employee employee) {
         employeeRepository.save(employee);
-        return "Success";
+        return ResponseHandler.responseBuilder("Employee updated successfully", HttpStatus.OK, null, "null");
     }
 
-    public String deleteEmployee(long id){
-        employeeRepository.deleteById(id);
-        return "Success";
+    public ResponseEntity deleteEmployee(long id) {
+        Optional<Employee> employeeOptional = employeeRepository.findById(id);
+        if (employeeOptional.isPresent()) {
+            employeeRepository.deleteById(id);
+            return ResponseHandler.responseBuilder("Employee deleted successfully", HttpStatus.OK, null, "null");
+        } else {
+            return ResponseHandler.responseBuilder("Employee not found", HttpStatus.NOT_FOUND, null, "Employee not found with id: " + id);
+        }
     }
 
-    public Employee getEmployee(long id){
-        return employeeRepository.findById(id).get();
+    public ResponseEntity getEmployee(long id) {
+        Optional<Employee> employeeOptional = employeeRepository.findById(id);
+        if (employeeOptional.isPresent()) {
+            return ResponseHandler.responseBuilder("Employee found", HttpStatus.OK, employeeOptional.get(), "null");
+        } else {
+            return ResponseHandler.responseBuilder("Employee not found", HttpStatus.NOT_FOUND, null, "Employee not found with id: " + id);
+        }
     }
 
-
-
-    public List<Employee> getAllEmployee(){
-        return employeeRepository.findAll();
+    public ResponseEntity getAllEmployee() {
+        List<Employee> allEmployees = employeeRepository.findAll();
+        if (allEmployees.isEmpty()) {
+            return ResponseHandler.responseBuilder("No employees found", HttpStatus.NOT_FOUND, null, "No employees found");
+        } else {
+            return ResponseHandler.responseBuilder("List of all employees", HttpStatus.OK, allEmployees, "null");
+        }
     }
 
-    public List<Employee> getEmployeeByName(String name){
-        List<Employee> allEmp = employeeRepository.findAll();
-        return allEmp.stream().filter(emp -> Objects.equals(emp.getName(), name)).toList();
+    public ResponseEntity getEmployeeByName(String name) {
+        List<Employee> allEmployees = employeeRepository.findAll();
+        List<Employee> filteredEmployees = allEmployees.stream().filter(emp -> Objects.equals(emp.getName(), name)).collect(Collectors.toList());
+        if (filteredEmployees.isEmpty()) {
+            return ResponseHandler.responseBuilder("No employees found with name", HttpStatus.NOT_FOUND, null, "No employees found with name: " + name);
+        } else {
+            return ResponseHandler.responseBuilder("Employees found with name", HttpStatus.OK, filteredEmployees, "null");
+        }
     }
 
-    public Employee setProject(long empid, long projectid){
-        Employee employee = employeeRepository.findById(empid).get();
-        Set<Project> st = employee.getProjectList();
-        Project project = projectRepository.findById(projectid).get();
-        st.add(project);
-        employeeRepository.save(employee);
-        return employee;
+    public ResponseEntity setProject(long empid, long projectid) {
+        Optional<Employee> employeeOptional = employeeRepository.findById(empid);
+        if (employeeOptional.isPresent()) {
+            Employee employee = employeeOptional.get();
+            Set<Project> projects = employee.getProjectList();
+            Optional<Project> projectOptional = projectRepository.findById(projectid);
+            if (projectOptional.isPresent()) {
+                Project project = projectOptional.get();
+                projects.add(project);
+                employeeRepository.save(employee);
+                return ResponseHandler.responseBuilder("Project added to employee successfully", HttpStatus.OK, employee, "null");
+            } else {
+                return ResponseHandler.responseBuilder("Project not found", HttpStatus.NOT_FOUND, null, "Project not found with id: " + projectid);
+            }
+        } else {
+            return ResponseHandler.responseBuilder("Employee not found", HttpStatus.NOT_FOUND, null, "Employee not found with id: " + empid);
+        }
     }
+
 
 }

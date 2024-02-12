@@ -5,6 +5,7 @@ import com.rest.crudOnEmployee.model.Department;
 import com.rest.crudOnEmployee.model.Employee;
 import com.rest.crudOnEmployee.service.DepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,35 +23,35 @@ public class DepartmentController {
 
 
     @GetMapping("/")
-    public List<Department> getAllDepartment(){
+    public ResponseEntity getAllDepartment(){
         return departmentService.getAllDepartment();
     }
 
     @GetMapping("/{id}/getEmployees")
-    public List<Employee> getEmployeesOfDepartment(@PathVariable("id") long id){
+    public ResponseEntity getEmployeesOfDepartment(@PathVariable("id") long id){
         return departmentService.getEmployeeByDepartmentId(id);
     }
 
 
     @GetMapping("/{id}")
-    public Department getOneDepartment(@PathVariable("id") long id){
+    public ResponseEntity getOneDepartment(@PathVariable("id") long id){
         return departmentService.getOneDepartment(id);
     }
 
     @PostMapping("/")
-    public Department postDepartment(@Validated @RequestBody  Department department){
-        departmentService.createDepartment(department);
-        return department;
+    public ResponseEntity postDepartment(@Validated @RequestBody  Department department){
+        return  departmentService.createDepartment(department);
+
     }
 
     @PutMapping("/{id}")
-    public String updateDepartment(@PathVariable("id") Integer id,@Validated @RequestBody Department department){
+    public ResponseEntity updateDepartment(@PathVariable("id") Integer id,@Validated @RequestBody Department department){
         return departmentService.updateDepartmentById(id,department);
 
     }
 
     @DeleteMapping("/{id}")
-    public String deleteDepartment(@PathVariable("id") Integer id){
+    public ResponseEntity deleteDepartment(@PathVariable("id") Integer id){
         return departmentService.deleteDepartment(id);
     }
 
