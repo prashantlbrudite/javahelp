@@ -1,5 +1,6 @@
 package com.rest.crudOnEmployee.service;
 
+import com.rest.crudOnEmployee.controller.ProjectController;
 import com.rest.crudOnEmployee.model.Project;
 import com.rest.crudOnEmployee.model.ProjectStatus;
 import com.rest.crudOnEmployee.repository.ProjectRepository;
@@ -79,12 +80,20 @@ public class ProjectService {
         return projectOptional.map(project -> ResponseHandler.responseBuilder("Project found", HttpStatus.OK, project, "null")).orElseGet(() -> ResponseHandler.responseBuilder("Project not found", HttpStatus.NOT_FOUND, null, "Project not found with id: " + id));
     }
 
-    public ResponseEntity createProject(Project project) {
-        projectRepository.save(project);
-        return ResponseHandler.responseBuilder("Project created successfully", HttpStatus.CREATED, null, "null");
+    public ResponseEntity<Object> createProject(Project project) {
+        Optional<Project> project1 = projectRepository.findById(project.getId());
+        if(project1.isPresent()){
+
+            return ResponseHandler.responseBuilder("Project Already Exists with id " + project.getId(), HttpStatus.ALREADY_REPORTED,null, "null");
+        }
+        else{
+            projectRepository.save(project);
+            return ResponseHandler.responseBuilder("Saved Successfully", HttpStatus.OK,project,"null");
+
+        }
     }
 
-    public ResponseEntity deleteProject(long id) {
+    public ResponseEntity<Object> deleteProject(long id) {
         Optional<Project> projectOptional = projectRepository.findById(id);
         if (projectOptional.isPresent()) {
             Project project = projectOptional.get();
