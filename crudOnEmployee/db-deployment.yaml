@@ -1,4 +1,4 @@
-# Define a 'Persistent Voulume Claim'(PVC) for Mysql Storage, dynamically provisioned by cluster
+# Define a 'Persistent Voulume Claim'(PVC) for Mysql Storage, dynamically provisioned by clusters
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
